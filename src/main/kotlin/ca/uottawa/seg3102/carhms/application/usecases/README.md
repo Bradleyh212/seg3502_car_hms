@@ -11,8 +11,8 @@ Sign In, Sign Out and Generate Trail Usage Report are intentionally excluded.
 | BrowseHikes | browseHikes |
 | RegisterHiker | registerHiker |
 | SignUpForHike | signUpForHike |
-| CancelSignUp | cancelSignUp |
-| UpdateHiker | updateHikerProfile, updateMembershipStatus, registerOrganizerCertification |
+| CancelSignUp | listMyRegistrations, cancelSignUp |
+| UpdateHiker | getHikerForUpdate, updateHikerProfile, updateMembershipStatus, registerOrganizerCertification |
 | CloseHike | closeHike |
 | SendHikeReminder | sendHikeReminder |
 | CreateHike | createHike |
@@ -21,6 +21,33 @@ Sign In, Sign Out and Generate Trail Usage Report are intentionally excluded.
 Input DTOs reside in `application.dtos.queries`, as required by Deliverable 1.
 Read/result DTOs reside in `application.dtos.results`; shared enums are in
 `application.dtos`. No domain entities are exposed or implemented.
+
+## Supporting reads
+
+CAR-Req-01 section 3.2 describes choosing an existing registration before cancellation
+and displaying current hiker information before an update. These interactions have
+explicit read operations alongside the existing commands:
+
+- `CancelSignUp.listMyRegistrations` accepts the authenticated hiker's email and
+  returns their registrations with hike identity/title/trail/start/deadline,
+  registration time, lifecycle status and current cancellation eligibility.
+  `RegistrationStatus` includes confirmed, waitlisted and cancelled records; only
+  eligible confirmed/waitlisted records can be selected for cancellation. Including
+  cancelled records is a presentation choice, not a new cancellation capability.
+  `canCancel` is a read-time snapshot and must be rechecked by the cancellation command.
+- `UpdateHiker.getHikerForUpdate` accepts the trusted actor identity and target hiker
+  email. It returns existing personal details, email, membership status and optional
+  organizer certification (number, issue/expiry dates and organizer level).
+  This supports both the hiker's personal form and the administrator's membership
+  and certification form. Authorization must restrict access to self or an authorized
+  administrator; returned values do not expand the existing write permissions.
+- `HikerForUpdate` reuses the existing immutable `HikerDetails` DTO for the shared
+  profile fields. Missing certification is represented by null; an expired recorded
+  certification is still returned with its dates. No credentials or invitation
+  codes are included in either response.
+
+These are declarations and data only. No retrieval, authorization, eligibility
+calculation or command behavior is implemented.
 
 ## Signature and interpretation assumptions
 
