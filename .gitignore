@@ -29,3 +29,17 @@ replay_pid*
 # macOS system files
 .DS_Store
 **/.DS_Store
+
+# Gradle caches and build output
+.gradle/
+**/build/
+
+# Keep the Gradle Wrapper despite the existing *.jar exclusion
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
