@@ -1,5 +1,7 @@
 # seg3502_car_hms
 
-Authors
+## Authors
+
 Bradley-Hans Desmornes
+
 Mathew Al-Frenn
